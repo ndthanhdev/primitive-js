@@ -6,6 +6,7 @@
   "author": "ndthanhdev <ndthanhdev@outlook.com>",
   "license": "MIT",
   "dependencies": {
+    "@types/node": "^12.7.11",
     "@types/yargs": "^13.0.3",
     "canvas": "^2.6.0",
     "ts-node": "^8.4.1",

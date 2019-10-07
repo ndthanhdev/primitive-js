@@ -7,7 +7,7 @@ const decode = (path: string) =>
     .then(img => {
       const ctx = createCanvas(img.width, img.height).getContext("2d");
       ctx.drawImage(img, 0, 0);
-      return ctx.getImageData(0, 0, img.width, img.height);
+      return ctx;
     })
     .then(data => {});
 

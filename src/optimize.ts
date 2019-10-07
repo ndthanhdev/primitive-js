@@ -1,31 +1,21 @@
-export interface Climber<T> {
-  getEnergy: () => number;
-  move: () => T;
-  undo: (arg1: T) => any;
-  copy: () => Climber<T>;
+export interface Climber {
+  getDeviation: () => number;
+  moveRnd: () => Climber;
+  clone: () => Climber;
 }
 
-export function HillClimbing<T>(
-  climber: Climber<T>,
-  maxAge: number
-): Climber<T> {
-  let state = climber.copy();
-  let bestState = state.copy();
-  let bestEnergy = state.getEnergy();
-  let step = 0;
+export function HillClimbing(climber: Climber, maxAge: number): Climber {
+  let state = climber.clone();
+  let energy = state.getDeviation();
 
   for (let age = 0; age < maxAge; age++) {
-    const undo = state.move();
-    const energy = state.getEnergy();
-    if (energy > bestEnergy) {
-      state.undo(undo);
-    } else {
-      bestEnergy = energy;
-      bestState = state;
+    const candidate = state.moveRnd();
+    if (energy > candidate.getDeviation()) {
+      state = state;
+      energy = energy;
       age = -1;
     }
-    step++;
   }
 
-  return bestState;
+  return state;
 }
