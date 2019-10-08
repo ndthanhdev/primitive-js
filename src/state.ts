@@ -42,8 +42,8 @@ export class State {
   ctx: CanvasRenderingContext2D;
 
   constructor(
-    public readonly widthOrContext: number | CanvasRenderingContext2D,
-    public readonly height?: number
+    widthOrContext: number | CanvasRenderingContext2D,
+    height?: number
   ) {
     if (typeof widthOrContext === "number") {
       if (typeof height === "number") {
@@ -76,6 +76,6 @@ export class State {
   clone(): State {
     const clone = new State(cloneCtx(this.ctx));
     clone.shapeStack = this.shapeStack.slice();
-    return this;
+    return clone;
   }
 }

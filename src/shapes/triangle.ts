@@ -1,6 +1,7 @@
 import { Context2D } from "@src/context-2d";
 import { rndInt } from "@src/utils";
 import { Shape, cloneCtx } from "@src/state";
+import { clampCoordinate } from "@src/utils";
 
 export interface Triangle {
   kind: "Triangle";
@@ -13,19 +14,22 @@ export interface Triangle {
   rgba: number[];
 }
 
-const MIN_DEVIATION = 32;
+const MIN_DEVIATION = 4;
 
 export function rndTriangle(w: number, h: number): Triangle {
-  const x1 = rndInt(w);
-  const y1 = rndInt(h);
+  const [x1, y1] = [rndInt(w), rndInt(h)];
 
-  const x2 = x1 + rndInt(w) + MIN_DEVIATION;
-  const y2 = y1 + rndInt(h) + MIN_DEVIATION;
+  const [x2, y2] = clampCoordinate(
+    [x1 + rndInt(w) + MIN_DEVIATION, y1 + rndInt(h) + MIN_DEVIATION],
+    [w, h]
+  );
 
-  const x3 = x1 + rndInt(w) + MIN_DEVIATION;
-  const y3 = y1 + rndInt(h) + MIN_DEVIATION;
+  const [x3, y3] = clampCoordinate(
+    [x1 + rndInt(w) + MIN_DEVIATION, y1 + rndInt(h) + MIN_DEVIATION],
+    [w, h]
+  );
 
-  const rgba = [rndInt(255), rndInt(255), rndInt(255), Math.random()];
+  const rgba = [rndInt(255), rndInt(255), rndInt(255), rndInt(255)];
 
   return {
     kind: "Triangle",
@@ -39,12 +43,19 @@ export function rndTriangle(w: number, h: number): Triangle {
   };
 }
 
+function rgbaToFillStyle(rgba: number[]) {
+  const rgb = rgba.slice(0, 3);
+  const a = rgba.slice(3, 4)[0] / 255;
+
+  return `rgba(${[...rgb, a].join(",")})`;
+}
+
 export function rasterizeTriangle(
   triangle: Triangle,
   ctx: CanvasRenderingContext2D
 ): CanvasRenderingContext2D {
   const clone = cloneCtx(ctx);
-  clone.fillStyle = `rbga(${triangle.rgba.join(",")})`;
+  clone.fillStyle = rgbaToFillStyle(triangle.rgba);
   clone.beginPath();
   clone.moveTo(triangle.x1, triangle.y1);
   clone.lineTo(triangle.x2, triangle.y2);

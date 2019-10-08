@@ -15,7 +15,7 @@ export function clampCoordinate(coor: number[], wh: number[]) {
 export function rndInt(minOrMax: number, max?: number) {
   let theMin: number;
   let theMax: number;
-  if (typeof max === undefined) {
+  if (max === undefined) {
     theMin = 0;
     theMax = minOrMax;
   } else {

@@ -10,6 +10,7 @@
     "@types/yargs": "^13.0.3",
     "canvas": "^2.6.0",
     "ts-node": "^8.4.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^3.6.3",
     "yargs": "^14.0.0"
   }
