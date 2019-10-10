@@ -69,7 +69,7 @@ yargs.command(
         // );
         const r = gen({
           target: ctx2d,
-          noShape: 32
+          noShape: 8
         });
         console.log("climbed");
 
@@ -78,8 +78,8 @@ yargs.command(
       .then(rs => {
         console.log("writing");
         rs.map((r, i) => {
-          writeFileSync(`${output}-${i}.png`, toPng(r.current));
-          writeFileSync(`${output}-${i}.txt`, r.current.data.join(","));
+          writeFileSync(`output/${output}-${i}.png`, toPng(r.current));
+          writeFileSync(`output/${output}-${i}.txt`, r.current.data.join(","));
         });
 
         console.log("wrote");
