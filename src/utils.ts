@@ -1,13 +1,20 @@
+import { int } from "random";
+import { nativeMath, integer, browserCrypto } from "random-js";
+
 export function coordinateToIndex(x: number, y: number) {
   return x * y * 4 + y * 4;
+}
+
+export function clamp(value: number, low: number, high: number) {
+  return Math.max(low, Math.min(high, value));
 }
 
 export function clampCoordinate(coor: number[], wh: number[]) {
   const [x, y] = coor;
   const [w, h] = wh;
 
-  const rX = Math.max(0, Math.min(w - 1, x));
-  const rY = Math.max(0, Math.min(h - 1, y));
+  const rX = clamp(x, 0, w - 1);
+  const rY = clamp(x, 0, h - 1);
 
   return [rX, rY];
 }
@@ -23,6 +30,7 @@ export function rndInt(minOrMax: number, max?: number) {
     theMax = max as number;
   }
   return Math.floor(Math.random() * (theMax - theMin + 1)) + theMin;
+  // return integer(theMin, theMax)(browserCrypto);
 }
 
 export const IsNodeEnv: boolean =

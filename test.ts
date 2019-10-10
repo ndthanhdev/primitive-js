@@ -1,7 +1,17 @@
 import yargs from "yargs";
-import { loadImage, createCanvas } from "canvas";
-import { bestState, State } from "@src/index";
+import { loadImage, createCanvas, createImageData } from "canvas";
+import { createContext2D, gen, OutputFormat, Context2D } from "@src/index";
 import { writeFileSync } from "fs";
+import { rndTriangle } from "@src/graphic/shapes/triangle";
+import { drawToMatch } from "@src/optimize";
+import { rasterize } from "@src/graphic/shapes";
+import { drawLines } from "@src/graphic/utils";
+
+function toPng({ w, h, data }: Context2D) {
+  const canvas = createCanvas(w, h);
+  canvas.getContext("2d").putImageData(createImageData(data, w, h), 0, 0);
+  return canvas.toBuffer();
+}
 
 yargs.command(
   ["gen", "* "].map(s => `${s} <input> <output>`),
@@ -16,7 +26,7 @@ yargs.command(
       });
   },
   args => {
-    const { input, output } = args;
+    const [input, output] = [args.input as string, args.output as string];
 
     loadImage(input as string)
       .then(img => {
@@ -30,33 +40,50 @@ yargs.command(
       })
       .then(ctx => {
         console.log("climbing");
+        const { width, height, data } = ctx.getImageData(
+          0,
+          0,
+          ctx.canvas.width,
+          ctx.canvas.height
+        );
 
-        const state = new State(ctx);
-        const best = bestState(state, 8);
+        const ctx2d = createContext2D(width, height, data);
+
+        // const shape = rndTriangle(width, height);
+        // const lines = rasterize({
+        //   kind: "Triangle",
+        //   x1: 100,
+        //   y1: 100,
+        //   x2: 500,
+        //   y2: 0,
+        //   x3: 300,
+        //   y3: 500
+        // });
+
+        // const p = drawLines(ctx2d, { r: 255, g: 0, b: 0, a: 255 }, lines);
+
+        // writeFileSync(output, toPng(p));
+        // writeFileSync(
+        //   `${output}.txt`,
+        //   lines.map(l => `${l.x1},${l.x2},${l.y}`).join(",")
+        // );
+        const r = gen({
+          target: ctx2d,
+          noShape: 8
+        });
         console.log("climbed");
 
-        return best;
+        return r;
       })
-
-      .then(state => {
+      .then(rs => {
         console.log("writing");
-        console.log();
-        writeFileSync(
-          `${output as string}.json`,
-          JSON.stringify(
-            state.ctx.getImageData(0, 0, state.w, state.h).data.join(",")
-          )
-        );
-        const canvas = createCanvas(state.w, state.h);
-        canvas
-          .getContext("2d")
-          .putImageData(state.ctx.getImageData(0, 0, state.w, state.h), 0, 0);
-
-        writeFileSync(output as string, canvas.toBuffer());
+        rs.map((r, i) => {
+          writeFileSync(`${output}-${i}.png`, toPng(r.current));
+          writeFileSync(`${output}-${i}.txt`, r.current.data.join(","));
+        });
 
         console.log("wrote");
       })
-      .then(console.log)
       .catch(console.error);
   }
 ).argv;
