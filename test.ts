@@ -69,7 +69,7 @@ yargs.command(
         // );
         const r = gen({
           target: ctx2d,
-          noShape: 8
+          noShape: 32
         });
         console.log("climbed");
 

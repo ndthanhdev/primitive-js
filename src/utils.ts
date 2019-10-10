@@ -1,6 +1,3 @@
-import { int } from "random";
-import { nativeMath, integer, browserCrypto } from "random-js";
-
 export function coordinateToIndex(x: number, y: number) {
   return x * y * 4 + y * 4;
 }
